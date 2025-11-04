@@ -3,154 +3,99 @@
 ## Overview
 StayClose is a wearable safety alert system for children in public spaces utilizing Bluetooth RSSI distance algorithm. The system uses Bluetooth technology to monitor the distance between a child-worn device and a guardian's mobile device, providing real-time alerts when the child moves beyond a safe distance.
 
-## System Architecture
+## Simple System Architecture
 
 ```mermaid
 graph LR
-    %% Main System Components %%
-    subgraph "USER INTERFACE LAYER"
-        A1[Mobile Application] --> A2[Distance Range Settings]
-        A1 --> A3[Alert Notification UI]
-        A1 --> A4[Device Management UI]
+    A[Child Wearable Device] <-- "Bluetooth RSSI" --> B[Guardian Mobile App]
+    
+    subgraph "Child Device"
+        A --> C[Buzzer]
+        A --> D[Vibration Motor]
+        A --> E[Battery]
     end
-
-    subgraph "CORE PROCESSING MODULES"
-        subgraph "DISTANCE MONITORING MODULE"
-            B1[Bluetooth RSSI Engine] --> B2[Signal Processing Algorithm]
-            B2 --> B3[Distance Calculation]
-            B3 --> B4[Threshold Monitoring]
-        end
-
-        subgraph "ALERT MANAGEMENT MODULE"
-            C1[Alert Generation] --> C2[Notification System]
-            C1 --> C3[Alert Levels Management]
-            C1 --> C4[User Feedback Processing]
-        end
-
-        subgraph "DEVICE PAIRING MODULE"
-            D1[Device Discovery] --> D2[Pairing Protocol]
-            D1 --> D3[Connection Management]
-            D1 --> D4[Security Validation]
-        end
+    
+    subgraph "Guardian Device"
+        B --> F[Alert Notifications]
+        B --> G[Distance Settings]
+        B --> H[Device Management]
     end
-
-    subgraph "DATA LAYER"
-        E1[Device Configuration Data] --> E2[User Settings]
-        E2 -->|"Settings"| A2
-        E3[Alert History] -->|"Logs"| A3
-        E4[Device Pairing Records] -->|"Records"| D2
-    end
-
-    subgraph "HARDWARE COMPONENTS"
-        subgraph "CHILD WEARABLE DEVICE"
-            F1A[ESP32/Arduino Nano 33 IoT] --> F1B[Bluetooth Module]
-            F1A --> F1C[Buzzer]
-            F1A --> F1D[Vibration Motor]
-            F1A --> F1E[Battery]
-            F1A --> F1F[Power Switch]
-        end
-
-        subgraph "GUARDIAN MOBILE DEVICE"
-            F2[Android Smartphone]
-        end
-
-        F1B <-- "Bluetooth Communication" --> F2
-        F1A -->|"Power"| F1E
-        F2 -->|"Controls"| A1
-    end
-
-    %% Data Flows %%
-    A1 -- "Configuration" --> B1
-    B1 -- "RSSI Data" --> B2
-    B2 -- "Filtered RSSI" --> B3
-    B3 -- "Distance Value" --> B4
-    B4 -- "Threshold Check" --> C1
-    C1 -- "Alert Trigger" --> C2
-    C2 -- "Notifications" --> A3
-    C1 -- "Device Alert" --> F1C
-    C1 -- "Device Alert" --> F1D
-    A1 -- "Pairing Request" --> D1
-    D1 -- "Discovery" --> D2
-    D2 -- "Secure Connection" --> D3
-    D3 -- "Validation" --> D4
-
-    style A1 fill:#e1f5fe
-    style B1 fill:#f3e5f5
-    style C1 fill:#fff3e0
-    style D1 fill:#e8f5e8
-    style F1A fill:#ffebee
-    style F2 fill:#fce4ec
+    
+    style A fill:#ffebee
+    style B fill:#e3f2fd
+    style C fill:#ffccbc
+    style F fill:#c8e6c9
 ```
+
+## Core Components
+
+### 1. Child Wearable Device
+The wearable device that the child carries or wears:
+- **ESP32/Arduino Nano 33 IoT**: Main processor
+- **Bluetooth Module**: Communicates with guardian's device
+- **Buzzer**: Audio alert for the child
+- **Vibration Motor**: Tactile alert for the child
+- **Battery**: Power source
+
+### 2. Guardian Mobile Application
+The smartphone app used by the parent/guardian:
+- **Distance Monitoring**: Tracks child's proximity using Bluetooth RSSI
+- **Alert System**: Notifies guardian when child moves too far
+- **Settings**: Configure safe distance range (2-10 meters)
+- **Device Management**: Pair/unpair devices
+
+### 3. Bluetooth RSSI Communication
+The wireless link between devices:
+- **Signal Strength Monitoring**: Measures distance via RSSI values
+- **Real-time Connection**: Continuous monitoring
+- **Offline Operation**: Works without internet
+
+## Simple Data Flow
+
+1. **Child Device** continuously broadcasts Bluetooth signals
+2. **Guardian App** receives signal strength (RSSI) values
+3. **System** calculates approximate distance from RSSI
+4. **If** distance exceeds safe range → **Alert triggered**
+5. **Guardian** receives notification on mobile app
+6. **Child** receives alert via buzzer/vibration
+
+## Key Features
+
+- **Real-time Monitoring**: Continuous distance tracking
+- **Dual Alerts**: Both guardian (app) and child (device) alerted
+- **Offline Operation**: No internet required
+- **Configurable Range**: Adjustable safe distance (2-10 meters)
+- **Low Cost**: Uses affordable hardware components
 
 ## Component Descriptions
 
-### User Interface Layer
-- **Mobile Application**: Primary interface for guardians to interact with the system
-- **Distance Range Settings**: Allows guardians to set safe distance parameters (2-10 meters)
-- **Alert Notification UI**: Visual and audible notifications when child moves beyond safe distance
-- **Device Management UI**: Interface for pairing, unpairing, and managing connected devices
+### Child Wearable Device
+- **ESP32/Arduino Nano 33 IoT**: Microcontroller that manages all device functions
+- **Bluetooth Module**: Sends and receives Bluetooth signals for distance calculation
+- **Buzzer**: Provides audible alert when child moves beyond safe range
+- **Vibration Motor**: Provides tactile alert for children who may not hear the buzzer
+- **Battery**: Powers the entire device (rechargeable recommended)
 
-### Distance Monitoring Module
-- **Bluetooth RSSI Engine**: Core engine responsible for monitoring Bluetooth signal strength
-- **Signal Processing Algorithm**: Filters and processes raw RSSI values to reduce noise
-- **Distance Calculation**: Converts RSSI values to approximate distance measurements
-- **Threshold Monitoring**: Continuously compares calculated distance against safe range settings
+### Guardian Mobile Application
+- **Distance Monitoring**: Uses Bluetooth RSSI values to calculate distance to child
+- **Alert Notifications**: Sends visual and audible alerts to guardian's phone
+- **Distance Settings**: Allows guardian to set safe distance parameters
+- **Device Management**: Handles pairing and connection management
 
-### Alert Management Module
-- **Alert Generation**: Creates alerts when child moves beyond safe distance
-- **Notification System**: Manages delivery of alerts to guardian's mobile device
-- **Alert Levels Management**: Handles different alert levels (warning and danger)
-- **User Feedback Processing**: Processes user responses to alerts
+### Communication
+- **Bluetooth RSSI**: Uses Received Signal Strength Indicator to estimate distance
+- **Real-time Updates**: Continuous monitoring with immediate alerts
+- **Reliable Connection**: Maintains connection within specified range
 
-### Device Pairing Module
-- **Device Discovery**: Identifies available Bluetooth devices for pairing
-- **Pairing Protocol**: Establishes secure connection between child device and guardian device
-- **Connection Management**: Maintains and monitors device connections
-- **Security Validation**: Ensures only authorized devices can connect
+## How It Works
 
-### Data Layer
-- **Device Configuration Data**: Storage of device-specific settings and parameters
-- **User Settings**: Guardian preferences for distance ranges and alert types
-- **Alert History**: Log of all alerts generated by the system
-- **Device Pairing Records**: Records of all paired devices
+1. Guardian sets a safe distance range in the mobile app (e.g., 5 meters)
+2. Child wears the device which continuously broadcasts Bluetooth signals
+3. Guardian's phone receives these signals and measures their strength
+4. System converts signal strength to distance measurement
+5. When child moves beyond the safe range, both devices trigger alerts
+6. Guardian receives notification on their phone
+7. Child receives alert through buzzer sound and/or vibration
+8. Guardian can then locate and retrieve the child
 
-### Hardware
-- **Child Wearable Device**: Physical device worn by child for monitoring
-- **Guardian Mobile Device**: Smartphone running the StayClose application
-- **Bluetooth Communication**: Wireless communication link between devices
-- **Power Management**: Battery and power regulation for all components
-
-### Wearable Components
-- **ESP32/Arduino Nano 33 IoT**: Microcontroller for processing and control
-- **Bluetooth Module**: Wireless communication component
-- **Buzzer**: Audible alert component for child device
-- **Vibration Motor**: Tactile alert component for child device
-- **Battery**: Power source for child device
-- **Power Switch**: Manual power control for child device
-
-## Data Flow
-1. Guardian interacts with Mobile Application to set distance parameters
-2. Child Wearable Device continuously broadcasts Bluetooth signals
-3. Guardian Mobile Device receives Bluetooth RSSI values
-4. Bluetooth RSSI Engine processes signal strength data
-5. Signal Processing Algorithm filters RSSI values to reduce noise
-6. Distance Calculation converts RSSI to approximate distance
-7. Threshold Monitoring compares distance against safe range
-8. If distance exceeds threshold, Alert Generation creates notification
-9. Notification System delivers alert to guardian's device
-10. Alert is also triggered on child device via buzzer/vibration
-11. All settings and alerts are stored in local data storage
-
-## Offline Capabilities
-The system is designed to function completely offline:
-- Bluetooth communication does not require internet connectivity
-- All processing occurs locally on devices
-- Data storage is local to devices
-- Alerts are generated and delivered without network dependence
-
-## Safety Features
-- Real-time distance monitoring with immediate alerts
-- Dual alert system (mobile notification and wearable device alerts)
-- Configurable distance thresholds (2-10 meters)
-- Multiple alert levels (warning and danger)
-- Local processing ensures no data privacy concerns
+This simplified architecture focuses on the essential components and workflow of the StayClose system, making it easier to understand the core functionality without getting into complex technical details.
