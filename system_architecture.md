@@ -6,93 +6,71 @@ HandTalk Lokal is an offline-capable hand sign-to-speech translation and learnin
 ## System Architecture
 
 ```mermaid
-graph TD
-    A[User Interface Layer] --> B[Gesture Recognition Module]
-    A --> C[Learning Module]
-    A --> D[Speech Synthesis Module]
-    
-    subgraph Frontend
-        A1[Mobile/Web Application]
-        A2[Accessibility Features]
-        A3[Dialect Selection]
-        A4[Progress Tracker UI]
-        A1 --> A2
-        A1 --> A3
-        A1 --> A4
+graph LR
+    %% Main System Components %%
+    subgraph "USER INTERFACE LAYER"
+        A1[Mobile/Web Application] --> A2[Accessibility Features]
+        A1 --> A3[Dialect Selection]
+        A1 --> A4[Progress Tracker UI]
     end
-    
-    subgraph Core Processing
-        B1[Computer Vision Engine]
-        B2[MediaPipe/TensorFlow]
-        B3[Gesture Preprocessing]
-        B4[Feature Extraction]
-        B1 --> B2
-        B1 --> B3
-        B1 --> B4
-        
-        C1[Learning Content Management]
-        C2[Lesson Modules]
-        C3[Interactive Quizzes]
-        C4[Video Tutorials]
-        C1 --> C2
-        C1 --> C3
-        C1 --> C4
-        
-        D1[Text-to-Speech Engine]
-        D2[Dialect Voice Models]
-        D3[Audio Processing]
-        D4[Offline Speech Database]
-        D1 --> D2
-        D1 --> D3
-        D1 --> D4
+
+    subgraph "CORE PROCESSING MODULES"
+        subgraph "GESTURE RECOGNITION MODULE"
+            B1[Computer Vision Engine] --> B2[MediaPipe/TensorFlow]
+            B1 --> B3[Gesture Preprocessing]
+            B1 --> B4[Feature Extraction]
+        end
+
+        subgraph "LEARNING MODULE"
+            C1[Learning Content Management] --> C2[Lesson Modules]
+            C1 --> C3[Interactive Quizzes]
+            C1 --> C4[Video Tutorials]
+        end
+
+        subgraph "SPEECH SYNTHESIS MODULE"
+            D1[Text-to-Speech Engine] --> D2[Dialect Voice Models]
+            D1 --> D3[Audio Processing]
+            D1 --> D4[Offline Speech Database]
+        end
     end
-    
-    subgraph Data Layer
-        E1[Offline Gesture Dataset]
-        E2[Pre-trained ML Models]
-        E3[User Progress Data]
-        E4[Dialect Vocabulary]
-        E1 --> E2
-        E2 --> B1
-        E3 --> A4
-        E4 --> D1
+
+    subgraph "DATA LAYER"
+        E1[Offline Gesture Dataset] --> E2[Pre-trained ML Models]
+        E2 -->|"Model Data"| B1
+        E3[User Progress Data] -->|"Progress"| A4
+        E4[Dialect Vocabulary] -->|"Vocabulary"| D1
     end
-    
-    subgraph Hardware
-        F1[Camera/Input Device]
-        F2[Processing Unit]
-        F3[Audio Output]
-        F4[Storage]
-        F1 --> B1
-        F2 --> B1
-        F2 --> C1
-        F2 --> D1
-        F3 --> D1
-        F4 --> E1
-        F4 --> E2
-        F4 --> E3
-        F4 --> E4
+
+    subgraph "HARDWARE COMPONENTS"
+        F1[Camera/Input Device] -->|"Video Input"| B1
+        F2[Processing Unit] -->|"Processing"| B1
+        F2 -->|"Processing"| C1
+        F2 -->|"Processing"| D1
+        F3[Audio Output] -->|"Audio"| D1
+        F4[Storage] -->|"Storage"| E1
+        F4 -->|"Storage"| E2
+        F4 -->|"Storage"| E3
+        F4 -->|"Storage"| E4
     end
-    
-    A --> A1
-    A --> A2
-    A --> A3
-    A --> A4
-    B --> B1
-    B --> B2
-    B --> B3
-    B --> B4
-    C --> C1
-    C --> C2
-    C --> C3
-    C --> C4
-    D --> D1
-    D --> D2
-    D --> D3
-    D --> D4
-    B1 --> E1
-    C1 --> E3
-    D1 --> E4
+
+    %% Data Flows %%
+    A1 -- "User Input" --> B1
+    A1 -- "Navigation" --> C1
+    A1 -- "Voice Output Request" --> D1
+    B1 -- "Recognized Gestures" --> D1
+    C1 -- "Learning Data" --> E3
+    D1 -- "Speech Output" --> F3
+    E1 -- "Training Data" --> E2
+    E2 -- "ML Models" --> B1
+    E3 -- "Progress Data" --> A4
+    E4 -- "Voice Data" --> D1
+
+    style A1 fill:#e1f5fe
+    style B1 fill:#f3e5f5
+    style C1 fill:#e8f5e8
+    style D1 fill:#fff3e0
+    style E1 fill:#fce4ec
+    style F1 fill:#f1f8e9
 ```
 
 ## Component Descriptions
