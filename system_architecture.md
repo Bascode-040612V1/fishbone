@@ -3,128 +3,93 @@
 ## Overview
 HandTalk Lokal is an offline-capable hand sign-to-speech translation and learning system for local Filipino dialects. The system uses computer vision and machine learning to recognize Filipino Sign Language (FSL) gestures and convert them into speech in selected local dialects (Ilocano, Hiligaynon, and Maranao).
 
-## System Architecture
+## Simple System Architecture
 
 ```mermaid
 graph LR
-    %% Main System Components %%
-    subgraph "USER INTERFACE LAYER"
-        A1[Mobile/Web Application] --> A2[Accessibility Features]
-        A1 --> A3[Dialect Selection]
-        A1 --> A4[Progress Tracker UI]
+    A[User] --> B[Camera Input]
+    B --> C[Gesture Recognition]
+    C --> D[Speech Synthesis]
+    D --> E[Audio Output]
+    
+    subgraph "HandTalk Lokal System"
+        C --> F[Machine Learning Models]
+        C --> G[FSL Gesture Database]
+        D --> H[Dialect Voice Models]
+        D --> I[Vocabulary Database]
     end
-
-    subgraph "CORE PROCESSING MODULES"
-        subgraph "GESTURE RECOGNITION MODULE"
-            B1[Computer Vision Engine] --> B2[MediaPipe/TensorFlow]
-            B1 --> B3[Gesture Preprocessing]
-            B1 --> B4[Feature Extraction]
-        end
-
-        subgraph "LEARNING MODULE"
-            C1[Learning Content Management] --> C2[Lesson Modules]
-            C1 --> C3[Interactive Quizzes]
-            C1 --> C4[Video Tutorials]
-        end
-
-        subgraph "SPEECH SYNTHESIS MODULE"
-            D1[Text-to-Speech Engine] --> D2[Dialect Voice Models]
-            D1 --> D3[Audio Processing]
-            D1 --> D4[Offline Speech Database]
-        end
-    end
-
-    subgraph "DATA LAYER"
-        E1[Offline Gesture Dataset] --> E2[Pre-trained ML Models]
-        E2 -->|"Model Data"| B1
-        E3[User Progress Data] -->|"Progress"| A4
-        E4[Dialect Vocabulary] -->|"Vocabulary"| D1
-    end
-
-    subgraph "HARDWARE COMPONENTS"
-        F1[Camera/Input Device] -->|"Video Input"| B1
-        F2[Processing Unit] -->|"Processing"| B1
-        F2 -->|"Processing"| C1
-        F2 -->|"Processing"| D1
-        F3[Audio Output] -->|"Audio"| D1
-        F4[Storage] -->|"Storage"| E1
-        F4 -->|"Storage"| E2
-        F4 -->|"Storage"| E3
-        F4 -->|"Storage"| E4
-    end
-
-    %% Data Flows %%
-    A1 -- "User Input" --> B1
-    A1 -- "Navigation" --> C1
-    A1 -- "Voice Output Request" --> D1
-    B1 -- "Recognized Gestures" --> D1
-    C1 -- "Learning Data" --> E3
-    D1 -- "Speech Output" --> F3
-    E1 -- "Training Data" --> E2
-    E2 -- "ML Models" --> B1
-    E3 -- "Progress Data" --> A4
-    E4 -- "Voice Data" --> D1
-
-    style A1 fill:#e1f5fe
-    style B1 fill:#f3e5f5
-    style C1 fill:#e8f5e8
-    style D1 fill:#fff3e0
-    style E1 fill:#fce4ec
-    style F1 fill:#f1f8e9
+    
+    style A fill:#e1f5fe
+    style B fill:#f3e5f5
+    style C fill:#e8f5e8
+    style D fill:#fff3e0
+    style E fill:#fce4ec
 ```
+
+## Core Components
+
+### 1. User Interface
+The user interacts with the system through:
+- **Camera Input**: Captures hand gestures using device camera
+- **Display**: Shows application interface and feedback
+- **Audio Output**: Delivers translated speech to user
+
+### 2. Gesture Recognition System
+Processes visual input to identify sign language gestures:
+- **Computer Vision Engine**: Detects and tracks hand movements
+- **FSL Gesture Database**: Collection of labeled Filipino Sign Language gestures
+- **Machine Learning Models**: Pre-trained models for gesture recognition
+
+### 3. Speech Synthesis System
+Converts recognized gestures into spoken words:
+- **Vocabulary Database**: Collection of words/phrases in local dialects
+- **Dialect Voice Models**: Voice synthesis for Ilocano, Hiligaynon, and Maranao
+- **Text-to-Speech Engine**: Converts text to audible speech
+
+## Simple Data Flow
+
+1. **User** performs a sign language gesture in front of the camera
+2. **Camera** captures the gesture as video input
+3. **Gesture Recognition** system processes the video using ML models
+4. **System** matches gesture with entries in FSL database
+5. **Speech Synthesis** retrieves corresponding word/phrase from vocabulary
+6. **System** converts text to speech using appropriate dialect voice model
+7. **Audio Output** delivers translated speech to the user
+
+## Key Features
+
+- **Offline Operation**: Works without internet connection
+- **Multi-dialect Support**: Ilocano, Hiligaynon, and Maranao
+- **Real-time Translation**: Instant gesture-to-speech conversion
+- **Learning Modules**: Interactive lessons for sign language education
+- **Accessibility Focus**: Designed for hearing-impaired users
 
 ## Component Descriptions
 
-### User Interface Layer
-- **Mobile/Web Application**: Primary interface for users to interact with the system
-- **Accessibility Features**: Large buttons, clear visuals, and voice guidance for users with disabilities
-- **Dialect Selection**: Allows users to choose their preferred local dialect (Ilocano, Hiligaynon, or Maranao)
-- **Progress Tracker UI**: Visual representation of user learning achievements and improvements
+### User Interface
+- **Camera Input**: Smartphone or webcam that captures user's hand gestures
+- **Display**: Touchscreen interface for system interaction and feedback
+- **Audio Output**: Speakers or headphones that deliver translated speech
 
-### Gesture Recognition Module
-- **Computer Vision Engine**: Core engine responsible for processing visual input
-- **MediaPipe/TensorFlow**: Frameworks used for real-time gesture recognition
-- **Gesture Preprocessing**: Initial processing of raw camera input
-- **Feature Extraction**: Identification of key features from gestures for recognition
+### Gesture Recognition System
+- **Computer Vision Engine**: Uses MediaPipe/TensorFlow for real-time gesture detection
+- **FSL Gesture Database**: Locally stored collection of labeled Filipino Sign Language gestures
+- **Machine Learning Models**: Pre-trained models optimized for FSL recognition
 
-### Learning Module
-- **Learning Content Management**: System for organizing and delivering educational content
-- **Lesson Modules**: Structured learning content for teaching sign language
-- **Interactive Quizzes**: Assessment tools to test user knowledge
-- **Video Tutorials**: Visual demonstrations of sign language gestures
+### Speech Synthesis System
+- **Vocabulary Database**: Collection of words and phrases in supported dialects
+- **Dialect Voice Models**: Specialized text-to-speech engines for each dialect
+- **Text-to-Speech Engine**: Converts recognized text into audible speech
 
-### Speech Synthesis Module
-- **Text-to-Speech Engine**: Converts recognized gestures into audible speech
-- **Dialect Voice Models**: Specific voice models for each supported dialect
-- **Audio Processing**: Handles audio output quality and clarity
-- **Offline Speech Database**: Pre-loaded database of speech samples for offline operation
+## How It Works
 
-### Data Layer
-- **Offline Gesture Dataset**: Collection of labeled gesture images for recognition
-- **Pre-trained ML Models**: Machine learning models trained on the gesture dataset
-- **User Progress Data**: Storage of user learning achievements and statistics
-- **Dialect Vocabulary**: Collection of words and phrases in each supported dialect
+1. User opens the HandTalk Lokal app and selects preferred dialect
+2. User performs a Filipino Sign Language gesture in front of the camera
+3. System captures the gesture using computer vision technology
+4. Machine learning models analyze the gesture and identify it
+5. System matches the gesture with corresponding word/phrase in database
+6. Text-to-speech engine converts the word/phrase to speech
+7. Translated speech is delivered in the selected local dialect
+8. User can also access learning modules to practice sign language
 
-### Hardware
-- **Camera/Input Device**: Captures user hand gestures for recognition
-- **Processing Unit**: Device responsible for running the application
-- **Audio Output**: Speakers or headphones for speech output
-- **Storage**: Local storage for offline datasets, models, and user data
-
-## Data Flow
-1. User interacts with the Mobile/Web Application
-2. Camera captures hand gestures
-3. Computer Vision Engine processes gestures using MediaPipe/TensorFlow
-4. Recognized gestures are matched against the Offline Gesture Dataset
-5. Corresponding text is retrieved from the Dialect Vocabulary
-6. Text-to-Speech Engine converts text to speech using Dialect Voice Models
-7. Audio is output through Audio Output devices
-8. User interactions and progress are stored in User Progress Data
-9. Learning Module provides educational content and assessments
-
-## Offline Capabilities
-All core components are designed to function without internet connectivity:
-- Pre-trained models are stored locally
-- Speech databases are pre-loaded
-- User data is stored locally
-- Learning content is bundled with the application
+This simplified architecture focuses on the essential components and workflow of the HandTalk Lokal system, making it easier to understand the core functionality without getting into complex technical details.
