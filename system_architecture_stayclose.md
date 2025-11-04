@@ -6,105 +6,80 @@ StayClose is a wearable safety alert system for children in public spaces utiliz
 ## System Architecture
 
 ```mermaid
-graph TD
-    A[User Interface Layer] --> B[Distance Monitoring Module]
-    A --> C[Alert Management Module]
-    A --> D[Device Pairing Module]
-    
-    subgraph Frontend
-        A1[Mobile Application]
-        A2[Distance Range Settings]
-        A3[Alert Notification UI]
-        A4[Device Management UI]
-        A1 --> A2
-        A1 --> A3
-        A1 --> A4
+graph LR
+    %% Main System Components %%
+    subgraph "USER INTERFACE LAYER"
+        A1[Mobile Application] --> A2[Distance Range Settings]
+        A1 --> A3[Alert Notification UI]
+        A1 --> A4[Device Management UI]
     end
-    
-    subgraph Core Processing
-        B1[Bluetooth RSSI Engine]
-        B2[Signal Processing Algorithm]
-        B3[Distance Calculation]
-        B4[Threshold Monitoring]
-        B1 --> B2
-        B1 --> B3
-        B1 --> B4
-        
-        C1[Alert Generation]
-        C2[Notification System]
-        C3[Alert Levels Management]
-        C4[User Feedback Processing]
-        C1 --> C2
-        C1 --> C3
-        C1 --> C4
-        
-        D1[Device Discovery]
-        D2[Pairing Protocol]
-        D3[Connection Management]
-        D4[Security Validation]
-        D1 --> D2
-        D1 --> D3
-        D1 --> D4
+
+    subgraph "CORE PROCESSING MODULES"
+        subgraph "DISTANCE MONITORING MODULE"
+            B1[Bluetooth RSSI Engine] --> B2[Signal Processing Algorithm]
+            B2 --> B3[Distance Calculation]
+            B3 --> B4[Threshold Monitoring]
+        end
+
+        subgraph "ALERT MANAGEMENT MODULE"
+            C1[Alert Generation] --> C2[Notification System]
+            C1 --> C3[Alert Levels Management]
+            C1 --> C4[User Feedback Processing]
+        end
+
+        subgraph "DEVICE PAIRING MODULE"
+            D1[Device Discovery] --> D2[Pairing Protocol]
+            D1 --> D3[Connection Management]
+            D1 --> D4[Security Validation]
+        end
     end
-    
-    subgraph Data Layer
-        E1[Device Configuration Data]
-        E2[User Settings]
-        E3[Alert History]
-        E4[Device Pairing Records]
-        E1 --> E2
-        E2 --> A2
-        E3 --> A3
-        E4 --> D2
+
+    subgraph "DATA LAYER"
+        E1[Device Configuration Data] --> E2[User Settings]
+        E2 -->|"Settings"| A2
+        E3[Alert History] -->|"Logs"| A3
+        E4[Device Pairing Records] -->|"Records"| D2
     end
-    
-    subgraph Hardware
-        F1[Child Wearable Device]
-        F2[Guardian Mobile Device]
-        F3[Bluetooth Communication]
-        F4[Power Management]
-        F1 --> F3
-        F2 --> F3
-        F3 --> B1
-        F1 --> F4
-        F2 --> F4
+
+    subgraph "HARDWARE COMPONENTS"
+        subgraph "CHILD WEARABLE DEVICE"
+            F1A[ESP32/Arduino Nano 33 IoT] --> F1B[Bluetooth Module]
+            F1A --> F1C[Buzzer]
+            F1A --> F1D[Vibration Motor]
+            F1A --> F1E[Battery]
+            F1A --> F1F[Power Switch]
+        end
+
+        subgraph "GUARDIAN MOBILE DEVICE"
+            F2[Android Smartphone]
+        end
+
+        F1B <-- "Bluetooth Communication" --> F2
+        F1A -->|"Power"| F1E
+        F2 -->|"Controls"| A1
     end
-    
-    subgraph Wearable Components
-        F1A[ESP32/Arduino Nano 33 IoT]
-        F1B[Bluetooth Module]
-        F1C[Buzzer]
-        F1D[Vibration Motor]
-        F1E[Battery]
-        F1F[Power Switch]
-        F1A --> F1B
-        F1A --> F1C
-        F1A --> F1D
-        F1A --> F1E
-        F1A --> F1F
-    end
-    
-    A --> A1
-    A --> A2
-    A --> A3
-    A --> A4
-    B --> B1
-    B --> B2
-    B --> B3
-    B --> B4
-    C --> C1
-    C --> C2
-    C --> C3
-    C --> C4
-    D --> D1
-    D --> D2
-    D --> D3
-    D --> D4
-    B1 --> E1
-    C1 --> E3
-    D1 --> E4
-    F1 --> F1A
-    F2 --> A1
+
+    %% Data Flows %%
+    A1 -- "Configuration" --> B1
+    B1 -- "RSSI Data" --> B2
+    B2 -- "Filtered RSSI" --> B3
+    B3 -- "Distance Value" --> B4
+    B4 -- "Threshold Check" --> C1
+    C1 -- "Alert Trigger" --> C2
+    C2 -- "Notifications" --> A3
+    C1 -- "Device Alert" --> F1C
+    C1 -- "Device Alert" --> F1D
+    A1 -- "Pairing Request" --> D1
+    D1 -- "Discovery" --> D2
+    D2 -- "Secure Connection" --> D3
+    D3 -- "Validation" --> D4
+
+    style A1 fill:#e1f5fe
+    style B1 fill:#f3e5f5
+    style C1 fill:#fff3e0
+    style D1 fill:#e8f5e8
+    style F1A fill:#ffebee
+    style F2 fill:#fce4ec
 ```
 
 ## Component Descriptions
